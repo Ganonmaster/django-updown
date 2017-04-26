@@ -44,7 +44,7 @@ class RatingManager(object):
         self.like_field_name = "{}_likes".format(self.field.name,)
         self.dislike_field_name = "{}_dislikes".format(self.field.name,)
 
-    def get_rating_for_user(self, user, ip_address=None):
+    def get_rating_for_user(self, user):
         kwargs = {
             'content_type': self.get_content_type(),
             'object_id': self.instance.pk,
@@ -52,11 +52,7 @@ class RatingManager(object):
         }
 
         if not (user and user.is_authenticated()):
-            if not ip_address:
-                raise ValueError("``user`` or ``ip_address`` must be "
-                                 "present.")
             kwargs['user__isnull'] = True
-            kwargs['ip_address'] = ip_address
         else:
             kwargs['user'] = user
 
@@ -73,7 +69,7 @@ class RatingManager(object):
                 self.instance)
         return self.content_type
 
-    def add(self, score, user, ip_address, commit=True):
+    def add(self, score, user, commit=True):
         try:
             score = int(score)
         except (ValueError, TypeError):
@@ -92,7 +88,6 @@ class RatingManager(object):
 
         defaults = {
             'score': score,
-            'ip_address': ip_address
         }
 
         kwargs = {
@@ -101,8 +96,6 @@ class RatingManager(object):
             'key': self.field.key,
             'user': user
         }
-        if not user:
-            kwargs['ip_address'] = ip_address
 
         try:
             rating, created = Vote.objects.get(**kwargs), False
