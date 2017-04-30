@@ -21,7 +21,6 @@ class Migration(migrations.Migration):
                 ('object_id', models.PositiveIntegerField()),
                 ('key', models.CharField(max_length=32)),
                 ('score', models.SmallIntegerField(choices=[(-1, 'DISLIKE'), (1, 'LIKE')])),
-                ('ip_address', models.GenericIPAddressField()),
                 ('date_added', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('date_changed', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('content_type', models.ForeignKey(related_name='updown_votes', to='contenttypes.ContentType')),
@@ -33,6 +32,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='vote',
-            unique_together=set([('content_type', 'object_id', 'key', 'user', 'ip_address')]),
+            unique_together=set([('content_type', 'object_id', 'key', 'user')]),
         ),
     ]
